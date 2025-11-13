@@ -1,0 +1,21 @@
+{
+    "Número de citas": 3,
+    "Trabajadores": [
+        [
+            "Dr. Pedro",
+            "10:00",
+            "Revisión anual"
+        ],
+        [
+            "Dr. Pedro",
+            "10:00",
+            "Limpieza"
+        ],
+        [
+            "Dra. Carmen",
+            "11:30",
+            "Ajuste ortodoncia"
+        ]
+    ],
+    "Facturación": 250
+}
