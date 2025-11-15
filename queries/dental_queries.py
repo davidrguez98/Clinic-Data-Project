@@ -13,36 +13,46 @@ today = datetime.today().strftime('%Y-%m-%d')
 # Creado solo para pruebas de peticiones
 today='2025-11-15'
 
-def request_bbdd(query: str):
-    connection = clinic.get_connection()
+# Petición a la BBDD
+def request_bbdd(query: str, params: tuple = None):
 
-    cursor = connection.cursor()
-    cursor.execute(query)
-    result = cursor.fetchall()
+    try:
+        connection = clinic.get_connection()
+        cursor = connection.cursor()
 
-    cursor.close()
-    connection.close()
-    
-    return result
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+
+        result = cursor.fetchall()
+        cursor.close()
+        
+        return result
+    except Exception as error:
+        print(f"Error during request {error}")
+        return None
+    finally:
+        if connection:
+            connection.close()
+
 
 # Cantidad citas del día
 def get_appointments_today():
-    appointments_quantity = request_bbdd(
-        f"SELECT COUNT(*) FROM appointments WHERE DATE(date_time)='{today}'"
-    )
+    query = "SELECT COUNT(*) FROM appointments WHERE DATE(date_time)=%s"
+    appointments_quantity = request_bbdd(query, (today,))
 
     return appointments_quantity[0][0]
 
 # Personal de la empresa que ha trabajado
 def get_workers_today():
-    workers_today = request_bbdd(
-        f"SELECT b.name AS worker, DATE_FORMAT(a.date_time, '%h:%i'), a.reason FROM appointments AS a JOIN workers AS b ON a.id_worker = b.id_worker WHERE DATE(a.date_time)='{today}' ORDER BY b.name, a.date_time"
-    )
+    query = "SELECT b.name, DATE_FORMAT(a.date_time, '%h:%i'), a.reason FROM appointments AS a JOIN workers AS b ON a.id_worker = b.id_worker WHERE DATE(a.date_time)=%s ORDER BY b.name, a.date_time"
+    workers_today = request_bbdd(query, (today,))
 
     return workers_today
 
+# Formatea la información de los trabajadores para verla como quiero
 def get_workers_today_grouped():
-
     rows = get_workers_today()
     grouped = {}
 
@@ -58,9 +68,8 @@ def get_workers_today_grouped():
 
 # Facturación del día
 def get_billing_today():
-    billing_today = request_bbdd(
-        f"SELECT SUM(total) FROM appointments AS a JOIN receipts AS b ON a.id_appointment = b.id_appointment WHERE DATE(a.date_time)='{today}'"
-    )
+    query = "SELECT SUM(total) FROM appointments AS a JOIN receipts AS b ON a.id_appointment = b.id_appointment WHERE DATE(a.date_time)=%s"
+    billing_today = request_bbdd(query, (today,))
 
     billing_today = int(billing_today[0][0])
 
