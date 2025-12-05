@@ -57,9 +57,9 @@ Su objetivo principal es centralizar datos distribuidos en diferentes tablas, no
 
 ## 📸 Capturas de pantalla
 
-![Estructura](../../../Desktop/Proyecto/BBDD_dentalClinic.jpg)
-![ETL](../../../Desktop/Proyecto/ETL.jpg)
-![Firestore](../../../Desktop/Proyecto/Firestore.jpg)
+![Estructura](./assets/BBDD_dentalClinic.jpg)
+![ETL](./assets/ETL.jpg)
+![Firestore](./assets/Firestore.jpg)
 
 
 ## 👩‍💻 Contacto
